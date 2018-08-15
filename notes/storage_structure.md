@@ -1,0 +1,13 @@
+simpleDB存储结构分两个层级，即数据库表文件和页，其中页又包括了缓存中的Page和文件中的Block。
+
+RecordFile对应存储单表数据的文件，而代码中实际操作的是RecordPage，表示一个页的管理单元。
+每一个RecordPage都对应一个磁盘中的Block。
+
+在RecordFile构造函数中会根据表名创建文件。
+
+RecordFile中的RecordPage rp指向当前使用的页，在构造函数中调用moveTo(0)，使得rp指向第一个页。
+
+RecordPage构造函数需要传入Block, TableInfo, Transaction三个对象。
+其中Block中包括了文件名和磁盘块序号，通过Block可以唯一的找到表文件中具体的某一块。
+TableInfo包含了表的元数据，在构造函数中会利用元信息初始化slotsize成员，表示该表中每一行的大小。
+在构造函数中还会调用tx.pin(blk)，将当前RecordPage对应的块加载进缓存。
